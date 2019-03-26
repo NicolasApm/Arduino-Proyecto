@@ -40,10 +40,14 @@ void setup()
 void loop()
 {
   //
+  //cuando se presiona una tecla se guarda en la variable C tipo char
   C = keypad.getKey();
+  //Boton para captura de datos
   button();
   if (C) {
-    // OnLeds(C);
+    //Encender leds de botones
+    OnLeds(C);
+    //Iniciar logica de captura de datos
     GameInsertData(value);
   }
 
@@ -194,7 +198,7 @@ void OnLeds(char C) {
       break;
   }
 }
-
+//nuevo
 void button() {
   value = digitalRead(inputPin);
   //lectura digital de pin
