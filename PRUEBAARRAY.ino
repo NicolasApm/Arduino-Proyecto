@@ -1,8 +1,9 @@
 #define DEBUG_ARRAY(a) {for (int index = 0; index < sizeof(a) / sizeof(a[0]); index++)   {Serial.print(a[index]); Serial.print('\t');} Serial.println();};
-#include <SoftwareSerial.h>
-#include <Keypad.h>
+//#include <SoftwareSerial.h>//libreria para recibir datos serial arduino uno
+#define ModBluetooth Serial3//libreria para recibir datos serial arduino due pines 14 tx y 15rx
+#include <Keypad.h>//libreria de teclado arduino
 
-SoftwareSerial ModBluetooth(2, 3); // RX | TX
+//SoftwareSerial ModBluetooth(2, 3); // RX | TX comunicacion modulo bluetooth
 
 String str = "";
 String Salida;
@@ -12,26 +13,29 @@ int b = 0;
 int count = 0;
 int value = 0;
 
+char array2[32];
+char My_Array[16];
+char C;
+
 const int dataLength = 0 ;
 const int inputPin = 12;
 const byte rowsCount = 4;
 const byte columsCount = 4;
-const byte rowPins[rowsCount] = { 11, 10, 9, 8 };
-const byte columnPins[columsCount] = { 7, 6, 5, 4 };
 
-char array2[32];
-char My_Array[16];
-char C;
 char keys[rowsCount][columsCount] = {
   { '1', '2', '3', 'a' },
   { '4', '5', '6', 'b' },
   { '7', '8', '9', 'c' },
-  { '*', '0', '#', 'd' }
+  { '#', '0', '*', 'd' }
 };
+
+byte rowPins[rowsCount] = { 11, 10, 9, 8 };//error de conversion base 64 (no pueden ser const)
+byte columnPins[columsCount] = { 7, 6, 5, 4 };//error de conversion base 64 (no pueden ser const)
+
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowsCount, columsCount);
+
 void setup()
 {
-
   pinMode(inputPin, INPUT);
   ModBluetooth.begin(9600);
   Serial.begin(9600);
@@ -50,19 +54,22 @@ void loop()
     //Iniciar logica de captura de datos
     GameInsertData(value);
   }
-
-  /*if (Serial.available() > 0) //something is there to be read
+  /*if (Serial.available() > 0) //
     {
     //GameInsertData();
     }*/
-
+  //preguntar si se reciben datos por el bluetooth
   if (ModBluetooth.available()) {
+    //logica donde se recibe la longitud y se devuelve un string con la secuencia separada por ,
     GameCompare();
   }
 }
 
+//Funcion para concatenar datos agrupados por ,
 void GameInsertData(int value1) {
-
+  /*cuando el boton de captura de datos se oprime cambia de estado y se agrupan los datos
+     en la variable salida (separados por ,)
+  */
   if (value1 == LOW)
   {
     value1 = HIGH;
@@ -77,9 +84,9 @@ void GameInsertData(int value1) {
     }
     for (int i = 0; i < (count * 2) - 1; i++) {
       //Serial.print(array2[i]);
-      Salida += array2[i];
+      Salida += array2[i];//concatenar datos de salida
     }
-
+    //mostrar datos de salida
     Serial.print(Salida);
 
     count = 0;
@@ -87,68 +94,57 @@ void GameInsertData(int value1) {
   else  My_Array[count++] = C;
 
 }
-
+/*la longitud de las secuencias del juego viene acompañado de un bit para diferenciar en caso
+   de que se repitan. se agrupa en la variable str.
+*/
 void GameCompare() {
-
-  str = ModBluetooth.readString();
-
+  str = ModBluetooth.readString();//variable de lectura de datos blutooth tipo string
+  //nivel 1 de juego secuencia colores
   if (str.equals("41")) {
     // String Salida = "a,f,k,p";
-    digitalWrite(13, HIGH);
-    delay(100);
-    digitalWrite(13, LOW);
     Serial.print(Salida);
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
+  //nivel 2 de juego secuencia colores
   else if (str.equals("42")) {
     // String Salida = "f,g,k,p";
-    digitalWrite(13, HIGH);
-    delay(100);
-    digitalWrite(13, LOW);
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
+  //nivel 3 de juego secuencia colores
   else if (str.equals("53")) {
     // Salida = "a,k,j,l,p";
-    digitalWrite(13, HIGH);
-    delay(100);
-    digitalWrite(13, LOW);
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
+  //nivel 1 de juego numeros
   else if (str.equals("3a")) {
     //Salida = "1,2,3";
-    digitalWrite(13, HIGH);
-    delay(100);
-    digitalWrite(13, LOW);
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
+  //nivel 2 de juego numeros
   else if (str.equals("4b")) {
     //Salida = "1,2,3";
-    digitalWrite(13, HIGH);
-    delay(100);
-    digitalWrite(13, LOW);
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
-   else if (str.equals("5c")) {
+  //nivel 3 de juego numeros
+  else if (str.equals("5c")) {
     //Salida = "1,2,3";
-    digitalWrite(13, HIGH);
-    delay(100);
-    digitalWrite(13, LOW);
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
-
   else {
     ModBluetooth.print(Error);
     ModBluetooth.print("#");
   }
+  //limpiar bariable de envio de datos
   Salida = "";
 }
-
+//funcion para encendido de leds
+//
 void OnLeds(char C) {
   switch (C) {
     case '1':
@@ -182,6 +178,9 @@ void OnLeds(char C) {
       Serial.print("0");
       break;
     case 'a':
+      Serial.print("a");
+      break;
+    case 'b':
       Serial.print("b");
       break;
     case 'c':
@@ -198,7 +197,7 @@ void OnLeds(char C) {
       break;
   }
 }
-//nuevo
+//Funcion para preguntar por el estado del boton capturador de datos para enviar
 void button() {
   value = digitalRead(inputPin);
   //lectura digital de pin
