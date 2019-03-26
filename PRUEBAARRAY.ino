@@ -26,7 +26,7 @@ char keys[rowsCount][columsCount] = {
   { '1', '2', '3', 'a' },
   { '4', '5', '6', 'b' },
   { '7', '8', '9', 'c' },
-  { '#', '0', '*', 'd' }
+  { '*', '0', 'z', 'd' }
 };
 
 byte rowPins[rowsCount] = { 11, 10, 9, 8 };//error de conversion base 64 (no pueden ser const)
@@ -100,24 +100,29 @@ void GameInsertData(int value1) {
 void GameCompare() {
   str = ModBluetooth.readString();//variable de lectura de datos blutooth tipo string
   //nivel 1 de juego secuencia colores
-  if (str.equals("41")) {
+  if (str.equals("81")) {
     // String Salida = "a,f,k,p";
-    Serial.print(Salida);
+    //Serial.print(Salida);
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
   //nivel 2 de juego secuencia colores
-  else if (str.equals("42")) {
+  else if (str.equals("72")) {
     // String Salida = "f,g,k,p";
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
   //nivel 3 de juego secuencia colores
-  else if (str.equals("53")) {
+  else if (str.equals("83")) {
     // Salida = "a,k,j,l,p";
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
+  else if (str.equals("94")) {
+    // Salida = "a,k,j,l,p";
+    ModBluetooth.print(Salida);
+    ModBluetooth.print("#");
+  }  
   //nivel 1 de juego numeros
   else if (str.equals("3a")) {
     //Salida = "1,2,3";
@@ -136,6 +141,16 @@ void GameCompare() {
     ModBluetooth.print(Salida);
     ModBluetooth.print("#");
   }
+  else if (str.equals("6d")) {
+    //Salida = "1,2,3";
+    ModBluetooth.print(Salida);
+    ModBluetooth.print("#");
+  }
+  else if (str.equals("7e")) {
+    //Salida = "1,2,3";
+    ModBluetooth.print(Salida);
+    ModBluetooth.print("#");
+  }
   else {
     ModBluetooth.print(Error);
     ModBluetooth.print("#");
@@ -148,52 +163,52 @@ void GameCompare() {
 void OnLeds(char C) {
   switch (C) {
     case '1':
-      Serial.print("1");
+      //Serial.print("1");
       break;
     case '2':
-      Serial.print("2");
+      //Serial.print("2");
       break;
     case '3':
-      Serial.print("3");
+      //Serial.print("3");
       break;
     case '4':
-      Serial.print("4");
+      //Serial.print("4");
       break;
     case '5':
-      Serial.print("5");
+      //Serial.print("5");
       break;
     case '6':
-      Serial.print("6");
+      //Serial.print("6");
       break;
     case '7':
-      Serial.print("7");
+      //Serial.print("7");
       break;
     case '8':
-      Serial.print("8");
+      //Serial.print("8");
       break;
     case '9':
-      Serial.print("9");
+      //Serial.print("9");
       break;
     case '0':
-      Serial.print("0");
+      //Serial.print("0");
       break;
     case 'a':
-      Serial.print("a");
+      //Serial.print("a");
       break;
     case 'b':
-      Serial.print("b");
+      //Serial.print("b");
       break;
     case 'c':
-      Serial.print("c");
+      //Serial.print("c");
       break;
     case 'd':
-      Serial.print("d");
+      //Serial.print("d");
       break;
     case '*':
-      Serial.print("*");
+      //Serial.print("*");
       break;
     case '#':
-      Serial.print("#");
+      //Serial.print("#");
       break;
   }
 }
